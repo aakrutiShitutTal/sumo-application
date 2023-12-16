@@ -1,3 +1,4 @@
+import { Role } from "src/enums/role.enum";
 import {AfterInsert, Entity, Column, PrimaryGeneratedColumn} from "typeorm"
 
 // enum UserRole {
@@ -14,7 +15,7 @@ export class User {
     password: string;
     // @Column("enum", { enum: UserRole })
     @Column({default: 0})
-    role: number
+    role: Role
     @AfterInsert()
     logInsert(){
         console.log(`Signed up user with id ${this.id}`)
