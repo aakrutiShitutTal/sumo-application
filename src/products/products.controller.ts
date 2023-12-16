@@ -3,7 +3,8 @@ import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { ProductsService } from './products.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-@UseGuards(JwtAuthGuard)
+import { SellerGuard } from 'src/authorization/seller.guard';
+@UseGuards(JwtAuthGuard, SellerGuard)
 @Controller('products')
 export class ProductsController {
     constructor(private productsService: ProductsService){}

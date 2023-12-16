@@ -10,10 +10,15 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
-    type: "sqlite",
-    database: "db.sqlite",
+    type: 'postgres',
+    host: 'localhost',
+    port: 5432,
+    password: 'sumoapi',
+    username: 'sumoapi_username',
     entities: [User, Product],
-    synchronize: true
+    database: 'sumoapi',
+    synchronize: true,
+    logging: true,
   }),UsersModule, ProductsModule, AuthModule],
   controllers: [AppController],
   providers: [AppService],
