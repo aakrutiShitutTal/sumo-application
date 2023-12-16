@@ -2,6 +2,8 @@ import { Controller, Post, Body, Get, Patch, Param, Query, Delete, UseGuards } f
 import { CreateProductDto } from './dtos/create-product.dto';
 import { UpdateProductDto } from './dtos/update-product.dto';
 import { ProductsService } from './products.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+@UseGuards(JwtAuthGuard)
 @Controller('products')
 export class ProductsController {
     constructor(private productsService: ProductsService){}
