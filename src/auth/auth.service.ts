@@ -2,12 +2,12 @@ import { BadRequestException, Injectable, NotFoundException } from '@nestjs/comm
 import { UsersService } from 'src/users/users.service';
 import { randomBytes, scrypt as _scrypt } from 'crypto';
 import { promisify } from 'util';
-import { LocalJwtService } from 'src/jwt/local-jwt.service';
+import { JwtService } from '@nestjs/jwt';
 
 const scrypt = promisify(_scrypt)
 @Injectable()
 export class AuthService {
-    constructor(private userService: UsersService, private jwtService: LocalJwtService){}
+    constructor(private userService: UsersService, private jwtService: JwtService){}
 
   async validateUser(email: string, password: string): Promise<any>{
     const user = await this.userService.findByEmail(email);
