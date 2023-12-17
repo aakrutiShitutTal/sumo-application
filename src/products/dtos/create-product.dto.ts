@@ -3,7 +3,15 @@ export class CreateProductDto {
     @IsString()
     name: string;
     @IsString()
-    imageUrl: string;
-    @IsNumber()
+    description: string
+    @IsString()
+    model: string
+    @IsString()
+    modelYear: string
+    @IsString()
+    size: string
+    @IsString()
+    qty
+    @IsString()
     price: string;
 }

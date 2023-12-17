@@ -2,33 +2,62 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from './product.entity';
+import { CreateProductDto } from './dtos/create-product.dto';
+import { UpdateProductDto } from './dtos/update-product.dto';
+import { User } from 'src/users/user.entity';
+import { use } from 'passport';
 
 @Injectable()
 export class ProductsService {
     constructor(@InjectRepository(Product) private repo: Repository<Product> ){}
-    create(name: string, imageUrl: string, price: number){
-        const product = this.repo.create({name, imageUrl, price})
-        return this.repo.save(product)
+    async create(productDto: CreateProductDto, user: User){
+        const product = this.repo.create(this.processProduct(productDto))
+        product.user = user
+        return await this.repo.save(product)
     }
-    findOne(id: number){
-        return this.repo.findOneBy({id})
-    }
-    find(prodName: string){
-        return this.repo.find({where: {name: prodName}})
-    }
-    async update(id: number, attrs: Partial<Product>){
-        const product = await this.findOne(id)
-        if (!product){
+
+    async findOne(id: number, user: User | null = null){
+        let product;
+        if(user){
+            product = await this.repo.findOneBy({id, user})
+        }else{
+            product = await this.repo.findOneBy({id})
+        }
+        if(!product){
             throw new NotFoundException("Product not found")
         }
-        Object.assign(product, attrs);
-        return this.repo.save(product);
+        return product
     }
-    async remove(id: number){
-        const product = await this.findOne(id)
-        if (!product){
-            throw new NotFoundException("Product not found")
+
+    find(name: string, user: User | null = null){
+        if (user) {
+            return this.repo.find({where: {name, user}})
+        }else {
+            return this.repo.find({where: {name}})
         }
-        return this.repo.remove(product);
+    }
+
+    async update(id: number, attrs: Partial<UpdateProductDto>, user: User | null = null){
+        const product = await this.findOne(id, user)
+        Object.assign(product, this.processProduct(attrs));
+        return await this.repo.save(product);
+    }
+
+    async remove(id: number, user: User | null = null){
+        const product = await this.findOne(id, user)
+        return await this.repo.remove(product);
+    }
+
+    private processProduct(productDto: CreateProductDto | Partial<UpdateProductDto>): Partial<Product>{
+        const {price, qty, ...restProduct} = productDto
+
+        const prod: Partial<Product> = { ...restProduct}
+        if (price){
+            prod.price = parseInt(price)
+        }
+        if(qty){
+            prod.qty = parseInt(qty)
+        }
+        return prod;
     }
 }

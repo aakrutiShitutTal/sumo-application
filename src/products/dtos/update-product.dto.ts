@@ -1,12 +1,17 @@
-import { IsString, IsOptional, IsNumber } from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 export class UpdateProductDto {
     @IsString()
-    @IsOptional()
     name: string;
     @IsString()
-    @IsOptional()
-    imageUrl: string;
-    @IsNumber()
-    @IsOptional()
-    price: number; // discuss this
+    description: string
+    @IsString()
+    model: string
+    @IsString()
+    modelYear: string
+    @IsString()
+    size: string
+    @IsString()
+    qty
+    @IsString()
+    price: string;
 }
