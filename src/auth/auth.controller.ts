@@ -15,7 +15,7 @@ export class AuthController {
     @Post("/consumer/signup")
     @Serialize(UserDto)
     async createConsumer(@Body() userDto: Partial<CreateUserDto>){
-        userDto.role = Role.User
+        userDto.role = Role.Consumer
         await this.authService.signUp(userDto)
     }
 

@@ -16,10 +16,10 @@ export class ProductsService {
         return await this.repo.save(product)
     }
 
-    async findOne(id: number, user: User | null = null){
+    async findOne(id: number, user: User | null = null): Promise<Product>{
         let product;
         if(user){
-            product = await this.repo.findOneBy({id, user})
+            product = await this.repo.findOneBy({id, user: user})
         }else{
             product = await this.repo.findOneBy({id})
         }
@@ -29,17 +29,23 @@ export class ProductsService {
         return product
     }
 
-    find(name: string, user: User | null = null){
+    async find(name: string, user: User | null = null){
         if (user) {
-            return this.repo.find({where: {name, user}})
+            return await this.repo.find({where: {name, user}})
         }else {
-            return this.repo.find({where: {name}})
+            return await this.repo.find({where: {name}})
         }
     }
 
     async update(id: number, attrs: Partial<UpdateProductDto>, user: User | null = null){
         const product = await this.findOne(id, user)
         Object.assign(product, this.processProduct(attrs));
+        return await this.repo.save(product);
+    }
+
+    async updateQty(id: number, qty: number){
+        const product = await this.findOne(id)
+        product.qty = qty;
         return await this.repo.save(product);
     }
 

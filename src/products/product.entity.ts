@@ -1,6 +1,7 @@
-import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, BeforeInsert} from "typeorm"
+import {Entity, Column, PrimaryGeneratedColumn, ManyToOne, BeforeInsert, OneToMany} from "typeorm"
 import { User } from "src/users/user.entity";
 import { BadRequestException } from "@nestjs/common";
+import { OrderItem } from "src/orderItems/order-item.entity";
 
 @Entity()
 export class Product {
@@ -31,10 +32,15 @@ export class Product {
     @ManyToOne(() => User, (user) => user.products)
     user: User;
 
-    @BeforeInsert()
-    validateUser(product){
-        if (this.user.role !== 1) {
-        throw new BadRequestException('Only seller can own products');
-        }
-    }
+    @OneToMany(() => OrderItem, (orderItem) => orderItem.product)
+    orderItems: OrderItem[]
+
+
+    // @BeforeInsert()
+    // validateUser(){
+    //     if (this.user.role !== 1) {
+    //     throw new BadRequestException('Only seller can own products');
+    //     }
+    //     return true;
+    // }
 }
